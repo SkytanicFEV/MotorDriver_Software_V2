@@ -1,6 +1,4 @@
 control.c:15:6:FindWaveformPhase	8	static
-control.c:90:6:StopWaveforms	16	static
+control.c:90:6:StopWaveforms	8	static
 control.c:117:6:UpdateWaveforms	24	static
 control.c:69:6:StartWaveforms	8	static
-control.c:268:7:fast_sin	24	static
-control.c:309:6:Create_SineTable	16	static

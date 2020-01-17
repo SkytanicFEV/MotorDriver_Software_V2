@@ -5,7 +5,7 @@
  *      Author: alex
  */
 
-#include "main.h"
+#include "control.h"
 
 /**
   * @brief Function to find the waveform phase based on the hall effect values
@@ -14,13 +14,13 @@
   */
 void FindWaveformPhase(void)
 {
-	if(GPIOB->IDR & HALL_PHASE_U_Pin)
+	if(GPIOB->IDR & HALL_A_PIN)
 	{
-		if(GPIOB->IDR & HALL_PHASE_V_Pin)
+		if(GPIOB->IDR & HALL_B_PIN)
 		{
 			waveformPhase = waveform_Phase4;
 		}
-		else if(GPIOB->IDR & HALL_PHASE_W_Pin)
+		else if(GPIOB->IDR & HALL_C_PIN)
 		{
 			waveformPhase = waveform_Phase6;
 
@@ -32,9 +32,9 @@ void FindWaveformPhase(void)
 	}
 	else
 	{
-		if(GPIOB->IDR & HALL_PHASE_V_Pin)
+		if(GPIOB->IDR & HALL_B_PIN)
 		{
-			if(GPIOB->IDR & HALL_PHASE_W_Pin)
+			if(GPIOB->IDR & HALL_C_PIN)
 			{
 				waveformPhase = waveform_Phase2;
 
@@ -47,7 +47,7 @@ void FindWaveformPhase(void)
 		}
 		else
 		{
-			if(GPIOB->IDR & HALL_PHASE_W_Pin)
+			if(GPIOB->IDR & HALL_C_PIN)
 			{
 				waveformPhase = waveform_Phase1;
 			}
@@ -94,10 +94,10 @@ void StopWaveforms(void)
 	TIM1->CCR2 = 0;
 	TIM1->CCR3 = 0;
 
-	// Turn on all low side
-	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_GPIO_Port, PWM_PHASE_U_LOW_Pin, RESET);
-	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_GPIO_Port, PWM_PHASE_V_LOW_Pin, RESET);
-	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_GPIO_Port, PWM_PHASE_W_LOW_Pin, RESET);
+	// Turn off all low side
+	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_PORT, PWM_PHASE_U_LOW_PIN, RESET);
+	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_PORT, PWM_PHASE_V_LOW_PIN, RESET);
+	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_PORT, PWM_PHASE_W_LOW_PIN, RESET);
 
 	// Update phase states
 	phaseU_State = phaseLow;
@@ -118,25 +118,26 @@ void UpdateWaveforms(void)
 {
 	switch(waveformPhase)
 	{
+	// TODO Use forced output
 	case waveform_Phase1:
 		// Turn on phase U high side
 		TIM1->CCR1 = waveformAmplitude;
 		// Turn off phase U low side (will get turned back on in interrupts)
-    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_GPIO_Port, PWM_PHASE_U_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_PORT, PWM_PHASE_U_LOW_PIN, RESET);
     	// Update phase state
     	phaseU_State = phaseHigh;
 
     	// Turn off phase V high side
     	TIM1->CCR2 = 0;
     	// Turn on phase V low side
-    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_GPIO_Port, PWM_PHASE_V_LOW_Pin, SET);
+    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_PORT, PWM_PHASE_V_LOW_PIN, SET);
     	// Update phase state
     	phaseV_State = phaseLow;
 
     	// Turn off phase W high side
     	TIM1->CCR3 = 0;
     	// Turn off phase W low side
-    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_GPIO_Port, PWM_PHASE_W_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_PORT, PWM_PHASE_W_LOW_PIN, RESET);
     	// Update phase state
     	phaseW_State = phaseOff;
 		return;
@@ -144,21 +145,21 @@ void UpdateWaveforms(void)
 		// Turn off phase U high side
 		TIM1->CCR1 = 0;
 		// Turn off phase U low side
-    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_GPIO_Port, PWM_PHASE_U_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_PORT, PWM_PHASE_U_LOW_PIN, RESET);
     	// Update phase state
     	phaseU_State = phaseOff;
 
     	// Turn off phase V high side
     	TIM1->CCR2 = 0;
     	// Turn on phase V low side
-    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_GPIO_Port, PWM_PHASE_V_LOW_Pin, SET);
+    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_PORT, PWM_PHASE_V_LOW_PIN, SET);
     	// Update phase state
     	phaseV_State = phaseLow;
 
     	// Turn on phase W high side
     	TIM1->CCR3 = waveformAmplitude;
     	// Turn off phase W low side (will get turned back on in interrupts)
-    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_GPIO_Port, PWM_PHASE_W_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_PORT, PWM_PHASE_W_LOW_PIN, RESET);
     	// Update phase state
     	phaseW_State = phaseHigh;
 		return;
@@ -166,21 +167,21 @@ void UpdateWaveforms(void)
 		// Turn off phase U high side
 		TIM1->CCR1 = 0;
 		// Turn on phase U low side
-    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_GPIO_Port, PWM_PHASE_U_LOW_Pin, SET);
+    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_PORT, PWM_PHASE_U_LOW_PIN, SET);
     	// Update phase state
     	phaseU_State = phaseLow;
 
     	// Turn off phase V high side
     	TIM1->CCR2 = 0;
     	// Turn off phase V low side
-    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_GPIO_Port, PWM_PHASE_V_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_PORT, PWM_PHASE_V_LOW_PIN, RESET);
     	// Update phase state
     	phaseV_State = phaseOff;
 
     	// Turn on phase W high side
     	TIM1->CCR3 = waveformAmplitude;
     	// Turn off phase W low side (will get turned back on in interrupts)
-    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_GPIO_Port, PWM_PHASE_W_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_PORT, PWM_PHASE_W_LOW_PIN, RESET);
     	// Update phase state
     	phaseW_State = phaseHigh;
 		return;
@@ -188,21 +189,21 @@ void UpdateWaveforms(void)
 		// Turn off phase U high side
 		TIM1->CCR1 = 0;
 		// Turn on phase U low side
-    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_GPIO_Port, PWM_PHASE_U_LOW_Pin, SET);
+    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_PORT, PWM_PHASE_U_LOW_PIN, SET);
     	// Update phase state
     	phaseU_State = phaseLow;
 
     	// Turn on phase V high side
     	TIM1->CCR2 = waveformAmplitude;
     	// Turn on phase V low side (will get turned back on in interrupts)
-    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_GPIO_Port, PWM_PHASE_V_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_PORT, PWM_PHASE_V_LOW_PIN, RESET);
     	// Update phase state
     	phaseV_State = phaseHigh;
 
     	// Turn off phase W high side
     	TIM1->CCR3 = 0;
     	// Turn off phase W low side
-    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_GPIO_Port, PWM_PHASE_W_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_PORT, PWM_PHASE_W_LOW_PIN, RESET);
     	// Update phase state
     	phaseW_State = phaseOff;
 		return;
@@ -210,21 +211,21 @@ void UpdateWaveforms(void)
 		// Turn off phase U high side
 		TIM1->CCR1 = 0;
 		// Turn off phase U low side
-    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_GPIO_Port, PWM_PHASE_U_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_PORT, PWM_PHASE_U_LOW_PIN, RESET);
     	// Update phase state
     	phaseU_State = phaseOff;
 
     	// Turn on phase V high side
     	TIM1->CCR2 = waveformAmplitude;
     	// Turn on phase V low side (will get turned back on in interrupts)
-    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_GPIO_Port, PWM_PHASE_V_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_PORT, PWM_PHASE_V_LOW_PIN, RESET);
     	// Update phase state
     	phaseV_State = phaseHigh;
 
     	// Turn off phase W high side
     	TIM1->CCR3 = 0;
     	// Turn on phase W low side
-    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_GPIO_Port, PWM_PHASE_W_LOW_Pin, SET);
+    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_PORT, PWM_PHASE_W_LOW_PIN, SET);
     	// Update phase state
     	phaseW_State = phaseLow;
 		return;
@@ -232,21 +233,21 @@ void UpdateWaveforms(void)
 		// Turn on phase U high side
 		TIM1->CCR1 = waveformAmplitude;
 		// Turn off phase U low side  (will get turned back on in interrupts)
-    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_GPIO_Port, PWM_PHASE_U_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_U_LOW_PORT, PWM_PHASE_U_LOW_PIN, RESET);
     	// Update phase state
     	phaseU_State = phaseHigh;
 
     	// Turn off phase V high side
     	TIM1->CCR2 = 0;
     	// Turn on phase V low side
-    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_GPIO_Port, PWM_PHASE_V_LOW_Pin, RESET);
+    	HAL_GPIO_WritePin(PWM_PHASE_V_LOW_PORT, PWM_PHASE_V_LOW_PIN, RESET);
     	// Update phase state
     	phaseV_State = phaseOff;
 
     	// Turn off phase W high side
     	TIM1->CCR3 = 0;
     	// Turn on phase W low side
-    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_GPIO_Port, PWM_PHASE_W_LOW_Pin, SET);
+    	HAL_GPIO_WritePin(PWM_PHASE_W_LOW_PORT, PWM_PHASE_W_LOW_PIN, SET);
     	// Update phase state
     	phaseW_State = phaseLow;
 		return;
@@ -259,57 +260,3 @@ void UpdateWaveforms(void)
 
 }
 
-
-/**
-  * @brief Use the fast sin algorithm to calculate sin(x)
-  * @param x = input to sin(x)
-  * @retval floating point value of result
-  */
-float fast_sin(float x)
-{
-	// If a value outside of -Pi - Pi is given, correct it
-	if(x < -(PI))
-	{
-		x += TWO_PI;
-	}
-	else if(x > PI)
-	{
-		x -= TWO_PI;
-	}
-
-	// Compute the approximation of sine
-	float sine;
-	// Compute the brunt of the calculation using sin(x) ~ (4/pi)x +- (4/(pi^2))x^2
-	if(x < 0)
-	{
-		sine = (FOUR_OVER_PI * x) + (FOUR_OVER_PI2 * x * x);
-	}
-	else
-	{
-		sine = (FOUR_OVER_PI * x) - (FOUR_OVER_PI2 * x * x);
-	}
-	// Make the calculation more accurate by = .225 * (+-(sine)^2 - sine) + sine
-    if (sine < 0)
-    {
-        sine = SINE_ACCURACY_CONSTANT * (sine * -1 * sine - sine) + sine;
-    }
-    else
-    {
-        sine = SINE_ACCURACY_CONSTANT * (sine * sine - sine) + sine;
-    }
-    // Return the calculated value
-    return sine;
-}
-
-/**
-  * @brief Creates a lookup table for the sine wave
-  * @param none
-  * @retval none
-  */
-void Create_SineTable(void)
-{
-	for(uint16_t i = 0; i < WAVEFORM_MAX_COUNT; i++)
-	{
-		sine_lookup[i] = fast_sin((float)i * PI / (float) WAVEFORM_MAX_COUNT);
-	}
-}

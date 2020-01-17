@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -26,14 +26,21 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+/* USER CODE BEGIN Includes */
 
-
+/* USER CODE END Includes */
 
 extern ADC_HandleTypeDef hadc;
 
+/* USER CODE BEGIN Private defines */
+
+/* USER CODE END Private defines */
 
 void MX_ADC_Init(void);
 
+/* USER CODE BEGIN Prototypes */
+
+/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }

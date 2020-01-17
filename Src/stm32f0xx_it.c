@@ -57,7 +57,6 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc;
-extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -89,8 +88,6 @@ void HardFault_Handler(void)
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
-	  dummy++;
-	  dummy--;
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
@@ -157,82 +154,7 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
-/**
-  * @brief This function handles USART1 global interrupt.
-  */
-void USART1_IRQHandler(void)
-{
-  /* USER CODE BEGIN USART1_IRQn 0 */
+/* USER CODE BEGIN 1 */
 
-  /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
-  /* USER CODE BEGIN USART1_IRQn 1 */
-
-  /* USER CODE END USART1_IRQn 1 */
-}
-
-void TIM1_CC_IRQHandler(void)
-{
-	HAL_TIM_IRQHandler(&htim1);
-}
-
-void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
-{
-	HAL_TIM_IRQHandler(&htim1);
-}
-
-// Interrupt handler
-void TIM3_IRQHandler(void)
-{
-
-	// Check for CC1 interrupt
-	if(__HAL_TIM_GET_FLAG(&htim3, TIM_FLAG_CC1) != RESET)
-	{
-		if(__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_CC1) !=RESET)
-		{
-			// Clear the interrupt
-		    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_CC1);
-		    htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_1;
-
-//		    UpdateWaveform(phase_U);
-
-			htim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-		}
-	}
-
-}
-
-void ADC1_IRQHandler(void)
-{
-
-	HAL_ADC_IRQHandler(&hadc);
-}
-
-// External Interrupts Handler (Hall Effects)
-void EXTI4_15_IRQHandler(void)
-{
-	uint32_t pr = EXTI->PR;
-	EXTI->PR = pr;
-
-//	if(__HAL_GPIO_EXTI_GET_IT(HALL_PHASE_U_Pin) != RESET)
-//	{
-//		__HAL_GPIO_EXTI_CLEAR_IT(HALL_PHASE_U_Pin);
-//	}
-//	if(__HAL_GPIO_EXTI_GET_IT(HALL_PHASE_V_Pin) != RESET)
-//	{
-//		__HAL_GPIO_EXTI_CLEAR_IT(HALL_PHASE_V_Pin);
-//	}
-//	if(__HAL_GPIO_EXTI_GET_IT(HALL_PHASE_V_Pin) != RESET)
-//	{
-//		__HAL_GPIO_EXTI_CLEAR_IT(HALL_PHASE_V_Pin);
-//	}
-	FindWaveformPhase();
-	// Update the waveforms after determining the phase
-	UpdateWaveforms();
-//	HAL_GPIO_EXTI_IRQHandler(HALL_PHASE_U_Pin);
-//	HAL_GPIO_EXTI_IRQHandler(HALL_PHASE_V_Pin);
-//	HAL_GPIO_EXTI_IRQHandler(HALL_PHASE_W_Pin);
-
-}
-
+/* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

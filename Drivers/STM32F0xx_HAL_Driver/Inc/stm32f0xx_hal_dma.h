@@ -58,7 +58,7 @@
   * @{
   */
 
-/** DMA_HandleTypeDef adc_DmaHandle;
+/** 
   * @brief  DMA Configuration Structure definition  
   */
 typedef struct

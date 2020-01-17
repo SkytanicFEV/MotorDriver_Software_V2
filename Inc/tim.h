@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -26,14 +26,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-
-
+// Desired frequency of the timers in KHz
+#define DESIRED_TIM_FREQ_KHZ			10U
 // Calculate period of the timer
-#define TIM_PERIOD					(uint16_t) (PROC_FREQ_KHZ / DESIRED_TIM_FREQ_KHZ)
+#define TIM_PERIOD						(uint16_t) (PROC_FREQ_KHZ / DESIRED_TIM_FREQ_KHZ)
+// Timer dead time
+#define TIM_DEADTIME					10U
 
-extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim15;
+TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim15;
 
 
 void MX_TIM1_Init(void);
@@ -41,7 +43,7 @@ void MX_TIM3_Init(void);
 void MX_TIM15_Init(void);
                         
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-                                        
+                                                            
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */
